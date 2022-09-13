@@ -1,13 +1,24 @@
+import 'package:cgv_cinemas/module/http.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-class Movies extends StatelessWidget {
+import 'model/movie_list.dart';
+
+class Movies extends StatefulWidget {
   const Movies({Key? key}) : super(key: key);
 
-  static const movieList = [
-    {
-      'name': 'Fast & Furious Presents: Hobbs & Shaw',
-    }
-  ];
+  @override
+  State<Movies> createState() => _MoviesState();
+}
+
+class _MoviesState extends State<Movies> {
+  Future<MovieList?> getMovies() async {
+    Response response = await Http.get(
+        '/3/movie/now_playing?api_key=520b47b2b90e7800b23b894474e39c37');
+
+    print(response);
+    return MovieList.fromJson(response.data);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,19 +43,26 @@ class Movies extends StatelessWidget {
               ),
             ),
             SizedBox(height: 25.0),
-            MovieCard(
-              title: 'Fast & Furious Presents: Hobbs & Shaw',
-              imageUrl:
-                  'https://m.media-amazon.com/images/M/MV5BOTIzYmUyMmEtMWQzNC00YzExLTk3MzYtZTUzYjMyMmRiYzIwXkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_SX300.jpg',
-              category: 'Movie',
-              rating: 7.8,
-            ),
-            MovieCard(
-              title: 'Fast & Furious Presents: Hobbs & Shaw',
-              imageUrl:
-                  'https://m.media-amazon.com/images/M/MV5BOTIzYmUyMmEtMWQzNC00YzExLTk3MzYtZTUzYjMyMmRiYzIwXkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_SX300.jpg',
-              category: 'Movie',
-              rating: 7.8,
+            Expanded(
+              child: FutureBuilder<MovieList?>(
+                future: getMovies(),
+                builder: (context, snapshot) {
+                  return ListView.builder(
+                    itemCount: snapshot.data?.results?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return MovieCard(
+                        title: snapshot.data?.results?[index].title ?? "",
+                        imageUrl:
+                            'https://image.tmdb.org/t/p/w200${snapshot.data?.results?[index].posterPath ?? ""}',
+                        category:
+                            snapshot.data?.results?[index].releaseDate ?? "",
+                        rating: snapshot.data?.results?[index].voteAverage ?? 0,
+                        color: Colors.blue,
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -57,12 +75,13 @@ class Movies extends StatelessWidget {
     required imageUrl,
     required category,
     required rating,
+    required color,
   }) {
     return Container(
       padding: const EdgeInsets.all(20.0),
       margin: const EdgeInsets.only(bottom: 15.0),
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: color,
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Row(
