@@ -57,7 +57,8 @@ class _MoviesState extends State<Movies> {
                         category:
                             snapshot.data?.results?[index].releaseDate ?? "",
                         rating: snapshot.data?.results?[index].voteAverage ?? 0,
-                        color: Colors.blue,
+                        color:
+                            index % 2 == 0 ? Colors.blue : Colors.purpleAccent,
                       );
                     },
                   );
