@@ -1,7 +1,6 @@
 import 'package:cgv_cinemas/module/http.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
 import 'model/movie_list.dart';
 
 class Movies extends StatefulWidget {
@@ -27,9 +26,10 @@ class _MoviesState extends State<Movies> {
         elevation: 0,
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 10.0,
+        padding: EdgeInsets.only(
+          left: 20.0,
+          right: 20.0,
+          top: 10.0,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +53,7 @@ class _MoviesState extends State<Movies> {
                       return MovieCard(
                         title: snapshot.data?.results?[index].title ?? "",
                         imageUrl:
-                            'https://image.tmdb.org/t/p/w200${snapshot.data?.results?[index].posterPath ?? ""}',
+                            'https://image.tmdb.org/t/p/w200/${snapshot.data?.results?[index].posterPath ?? ""}',
                         category:
                             snapshot.data?.results?[index].releaseDate ?? "",
                         rating: snapshot.data?.results?[index].voteAverage ?? 0,

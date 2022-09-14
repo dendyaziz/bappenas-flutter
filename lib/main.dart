@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:cgv_cinemas/movies.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
   runApp(const HomePage());
@@ -13,6 +16,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Completer<GoogleMapController> _controller = Completer();
+
   var movieCount = 5;
 
   static const MaterialColor white = const MaterialColor(
@@ -29,6 +34,11 @@ class _HomePageState extends State<HomePage> {
       800: const Color(0xFFFFFFFF),
       900: const Color(0xFFFFFFFF),
     },
+  );
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(-6.3626907128447945, 106.75102741086776),
+    zoom: 16,
   );
 
   @override
@@ -75,7 +85,17 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pushNamed(context, '/movies');
                   },
                   child: Text('Lihat Semua'),
-                )
+                ),
+                Container(
+                  height: 300.0,
+                  child: GoogleMap(
+                    mapType: MapType.satellite,
+                    initialCameraPosition: _kGooglePlex,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                  ),
+                ),
               ],
             ),
           ),
